@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href=""?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="LOG_FILE" value="${LOG_FILE_PATH}"/>
+
+    <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}/app.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE}/archived/app_%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <!-- each archived file, size max 5KB -->
+            <maxFileSize>5KB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20KB,
+				it will delete old archived file -->
+            <totalSizeCap>20KB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+             <pattern>%d %p %c [%t] %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <logger name="com.n22.jfn" level="info" additivity="false">
+        <appender-ref ref="FILE-ROLLING"/>
+    </logger>
+
+    <root level="error">
+        <appender-ref ref="FILE-ROLLING"/>
+    </root>
+
+    <logger name="com.n22.jfn" level="debug" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    <root level="error">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>
